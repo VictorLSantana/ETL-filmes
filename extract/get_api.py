@@ -27,7 +27,7 @@ if __name__ == "__main__":
     titulo = ["Inception", "The Godfather", "Esse filme não existe"]
 
     # Exibe o dicionário
-    resultado = conecta_api(titulos, api_key).items()
+    resultado = conecta_api(titulo, api_key).items()
     for filme, info in resultado:
         print(f"Filme: {filme}")
         print(f"Informações: {info}")
