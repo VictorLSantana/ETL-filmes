@@ -1,7 +1,7 @@
 
 import re
 
-def formata_tiulos(filmes):
+def limpar_titulos(filmes):
     # Expressão regular para capturar o nome após "número. "
     regex = re.compile(r'^\d+\.\s+(.*)')
 
@@ -29,6 +29,6 @@ if __name__ == "__main__":
         'Movie news'
     ]
     
-    nomes_filmes_limpos = formata_tiulos(filmes)
+    nomes_filmes_limpos = limpar_titulos(filmes)
     print(nomes_filmes_limpos)
      

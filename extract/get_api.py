@@ -3,7 +3,7 @@ from dotenv import dotenv_values
 import requests
 
 # Importa as variáveis de ambiente do arquivo .env 
-env = dotenv_values(dotenv_path='../.env')
+env = dotenv_values(dotenv_path='.env')
 api_key = env["api_key"]
 
 # Função que faz a requisição para API de filmes
@@ -24,6 +24,8 @@ def conecta_api(titulo, api_key):
     
  
 if __name__ == "__main__":
+    env = dotenv_values(dotenv_path='../.env')
+    api_key = env["api_key"]
     titulo = ["Inception", "The Godfather", "Esse filme não existe"]
 
     # Exibe o dicionário
