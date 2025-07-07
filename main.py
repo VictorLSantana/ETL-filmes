@@ -3,7 +3,7 @@ from dotenv import dotenv_values
 from extract.get_api import conecta_api
 from extract.scraping import raspar_filmes
 from transform.formata_titulos import limpar_titulos
-from sqlalchemy import create_engine
+from load.conectar_bd import conectar_bd
 import pandas as pd
 
 # Importa as variáveis de ambiente do arquivo .env 
@@ -76,3 +76,11 @@ df["BoxOffice"] = df["BoxOffice"].str.replace("$", "").str.replace(",", "").asty
 
 # Formatando a coluna imdbRating para float
 df["imdbRating"] = df["imdbRating"].astype(float)
+
+# Conectando ao banco de dados MySQL
+user = env["user"]
+password = env["password"]
+host = env["host"]
+database = env["database"]
+port = env["port"]
+conectar_bd(user, password, host, database, port, df, 'filmes_imdb')
