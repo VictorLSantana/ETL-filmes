@@ -2,15 +2,13 @@
 from dotenv import dotenv_values
 import requests
 
-# Importa as variáveis de ambiente do arquivo .env 
-env = dotenv_values(dotenv_path='.env')
-api_key = env["api_key"]
 
 # Função que faz a requisição para API de filmes
 def conecta_api(titulo, api_key):
     filmes_dict = {}  # dicionário dinâmico
     
     for t in titulo:
+        print(f"Conectando à API para o filme: {t}")
         url = f"http://www.omdbapi.com/?t={t}&apikey={api_key}"
         response = requests.get(url)
         if response.status_code == 200:
