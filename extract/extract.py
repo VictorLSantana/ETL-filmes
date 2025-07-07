@@ -1,4 +1,5 @@
 
+from dotenv import dotenv_values
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -6,7 +7,25 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+import requests
 
+
+# Função que faz a requisição para API de filmes
+def conecta_api(titulo, api_key):
+    filmes_dict = {}  # dicionário dinâmico
+    print(f"Conectando à API do OMDb")
+    
+    for t in titulo:
+        url = f"http://www.omdbapi.com/?t={t}&apikey={api_key}"
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            filmes_dict[t] = data
+        
+        else:
+            raise Exception(f"Erro na requisição: {response.status_code}")
+    
+    return filmes_dict
 
 # Função para retornar nome dos 250 melhores filmes do IMDB
 def raspar_filmes():
@@ -39,9 +58,21 @@ def raspar_filmes():
     driver.quit()
     
     return titulos_texto
-
+    
+ 
 if __name__ == "__main__":
-    # Executa a função e imprime os resultados
+    
+    # === Executa a função de conectar á API ===
+    env = dotenv_values(dotenv_path='../.env')
+    api_key = env["api_key"]
+    titulo = ["Inception", "The Godfather", "Esse filme não existe"]
+    resultado = conecta_api(titulo, api_key).items()
+    for filme, info in resultado:
+        print(f"Filme: {filme}")
+        print(f"Informações: {info}")
+        print()
+    
+    # === Executa a função de raspagem de filmes ===
     filmes = raspar_filmes()
     for filme in filmes:
         print(filme)

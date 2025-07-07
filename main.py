@@ -1,20 +1,30 @@
 
+from extract.extract import conecta_api, raspar_filmes
+from transform.transform import limpar_titulos
+from load.load import conectar_bd, escrever_df_no_bd
+
 from dotenv import dotenv_values
-from extract.get_api import conecta_api
-from extract.scraping import raspar_filmes
-from transform.formata_titulos import limpar_titulos
-from load.conectar_bd import conectar_bd
 import pandas as pd
 
 # Importa as variáveis de ambiente do arquivo .env 
 env = dotenv_values(dotenv_path='.env')
 
-# ==== Pipe Line ====:
+# ==== Pipe Line ====: (Extract, Transform, Load)
+
+# ==== EXTRACT ====:
 # Raspar os títulos de filmes
-# Formatar os títulos dos filmes
 # Conectar à API para obter informações dos filmes
+
+
+# ==== TRANSFORM ====:
+# Formatar os títulos dos filmes
 # Tratamento dos dados
+
+
+# ==== LOAD ====:
 # Conectar ao banco de dados
+# Enviar o dataframe para o banco de dados MySQL
+
 
 
 # Raspando os títulos dos  250 melhores filmes do site IMDB
@@ -67,7 +77,6 @@ df["Year"] = df["Year"].astype(pd.Int64Dtype())
 # Formatando a coluna Metascore para inteiro
 df["Metascore"] = df["Metascore"].astype(pd.Int64Dtype())
 
-
 # Formatando a coluna imdbVotes para inteiro
 df["imdbVotes"] = df["imdbVotes"].str.replace(",", "").astype(pd.Int64Dtype())
 
@@ -83,4 +92,15 @@ password = env["password"]
 host = env["host"]
 database = env["database"]
 port = env["port"]
-conectar_bd(user, password, host, database, port, df, 'filmes_imdb')
+engine = conectar_bd(user, password, host, database, port)
+
+# Enviando o DataFrame para o banco de dados MySQL
+escrever_df_no_bd(engine, df, 'filmes_imdb')
+
+#######################
+todos_os_generos = df['Genre'].str.split(', ').explode().unique()
+contagem_generos = df['Genre'].str.split(', ').explode().value_counts()
+print("Todos os gêneros disponíveis: ", todos_os_generos)
+
+df[df['Genre'].str.contains("Music")]
+#######################

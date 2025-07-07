@@ -5,15 +5,27 @@ import pandas as pd
 
 
 
-def conectar_bd(user, password, host, database, port, df, table_name):
+def conectar_bd(user, password, host, database, port):
     """
     Função para conectar ao banco de dados MySQL e enviar um DataFrame.
     """
     # Configurar a conexão com o banco de dados MySQL.
     engine = create_engine(f'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}')
+    
+    print(f"Conectado ao banco de dados {database} com sucesso.")
+    
+    return engine
 
+def escrever_df_no_bd(engine, df, table_name):
+    """
+    Função auxiliar para escrever um DataFrame no banco de dados.
+    """
     # Enviar o DataFrame para o banco de dados MySQL.
-    return df.to_sql(name=table_name, con=engine, if_exists='replace', index=False)  # Implementação da função de conexão com o banco de dados, se necessário.
+    df.to_sql(name=table_name, con=engine, if_exists='replace', index=False) 
+    
+    print(f"DataFrame escrito na tabela '{table_name}' com sucesso.")
+
+
 
 if __name__ == "__main__":
     # Exemplo de uso da função conectar_bd
