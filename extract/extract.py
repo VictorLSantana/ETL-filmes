@@ -37,7 +37,7 @@ def raspar_filmes():
     options.add_experimental_option('useAutomationExtension', False)
     driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
     driver.get(url_pagina)
-    driver.maximize_window()
+    driver.maximize_window()  # Maximiza a janela do navegador
     wait = WebDriverWait(driver, 20)  # Tempo máximo de espera por elemento
 
     # === Raspando nome dos filmes ===

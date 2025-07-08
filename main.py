@@ -1,11 +1,12 @@
 
 from extract.extract import conecta_api, raspar_filmes
 from transform.transform import limpar_titulos
-from load.load import conectar_bd, escrever_df_no_bd, interface_usuario
+from load.load import conectar_bd, escrever_df_no_bd, interface_usuario_genero, interface_usuario_diretor, consulta_filme_bd, caracteristicas_filme
 
 from dotenv import dotenv_values
 import pandas as pd
 import warnings
+import time
 warnings.filterwarnings("ignore")
 
 # Importa as variáveis de ambiente do arquivo .env 
@@ -31,9 +32,12 @@ env = dotenv_values(dotenv_path='.env')
 
 
 # Raspando os títulos dos  250 melhores filmes do site IMDB
+print(f"{'='*20} INTERFACE DE RECOMENDAÇÃO DE FILMES {'='*20}\n")
+print("- Entrando no site 'https://www.imdb.com/chart/top' para baixar as informações dos filmes...\n")
+time.sleep(5)  # Pausa de 5 segundos para simular o tempo de carregamento da página
 titulos_texto = raspar_filmes()
 
-# Formatando os títulos dos filmes
+# Formatando os títulos dos filmes17
 titulos_limpos = limpar_titulos(titulos_texto)
 
 # Conectando à API para obter informações dos filmes
@@ -47,8 +51,7 @@ filmes_dict = pd.read_json('filmes.json', orient='index') # apagar quando for ch
 # Selecionando as características que serão exibidas
 caracteristicas = [
     "Title",
-    "Year",
-    "Rated",
+    "Released",
     "Runtime",
     "Genre",
     "Director",
@@ -72,25 +75,15 @@ df = filmes_dict # apagar quando for chamar a api
 df = df[caracteristicas]
 
 # Tratando valores ausentes
-df = df.replace("N/A", pd.NA)
+df = df.replace("N/A", "Valor não divulgado")  # Substitui valores "N/A" por "Valor não divulgado"
 
 # Formatando a coluna Runtime para inteiro
+def converter_minutos_para_horas(minutos):
+    horas, resto = divmod(minutos, 60)
+    return f"{horas}h {resto}min"
+
 df["Runtime"] = df["Runtime"].str.replace(" min", "").astype(pd.Int64Dtype())
-
-# Formatando a coluna Year para inteiro
-df["Year"] = df["Year"].astype(pd.Int64Dtype())
-
-# Formatando a coluna Metascore para inteiro
-df["Metascore"] = df["Metascore"].astype(pd.Int64Dtype())
-
-# Formatando a coluna imdbVotes para inteiro
-df["imdbVotes"] = df["imdbVotes"].str.replace(",", "").astype(pd.Int64Dtype())
-
-# Formatando a coluna BoxOffice para inteiro
-df["BoxOffice"] = df["BoxOffice"].str.replace("$", "").str.replace(",", "").astype(pd.Int64Dtype())
-
-# Formatando a coluna imdbRating para float
-df["imdbRating"] = df["imdbRating"].astype(float)
+df["Runtime"] = df["Runtime"].apply(converter_minutos_para_horas)
 
 # Conectando ao banco de dados MySQL
 user = env["user"]
@@ -104,6 +97,8 @@ engine = conectar_bd(user, password, host, database, port)
 escrever_df_no_bd(engine, df, 'filmes_imdb')
 
 # Interface de usuário para recomendação de filmes
-lista_genero, genero = interface_usuario(df, 'Genre')
-print(lista_genero)
-print(genero)
+genero = interface_usuario_genero(df)
+diretor = interface_usuario_diretor(df, genero)
+filme = consulta_filme_bd(genero, diretor, engine)
+caracteristicas_filme(filme, engine)
+
