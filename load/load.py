@@ -162,7 +162,7 @@ def caracteristicas_filme(filme, engine):
     print(f"Votos IMDb: {filme_info['imdbVotes']}")
     print(f"Bilheteria: {filme_info['BoxOffice']}")
     
-    return filme_info
+    print("\nEssas são as características do filme que você escolheu. Aproveite o filme!\n")
     
     
     

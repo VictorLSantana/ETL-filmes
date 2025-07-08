@@ -1,4 +1,5 @@
 
+
 from extract.extract import conecta_api, raspar_filmes
 from transform.transform import limpar_titulos
 from load.load import conectar_bd, escrever_df_no_bd, interface_usuario_genero, interface_usuario_diretor, consulta_filme_bd, caracteristicas_filme
@@ -42,8 +43,8 @@ titulos_limpos = limpar_titulos(titulos_texto)
 
 # Conectando à API para obter informações dos filmes
 api_key = env["api_key"]
-#filmes_dict = conecta_api(titulos_limpos, api_key)
-filmes_dict = pd.read_json('filmes.json', orient='index') # apagar quando for chamar a api
+filmes_dict = conecta_api(titulos_limpos, api_key)
+#filmes_dict = pd.read_json('filmes.json', orient='index') # apagar quando for chamar a api
 
 
 
@@ -68,14 +69,15 @@ caracteristicas = [
 ]
 
 # Cria DataFrame com todas as colunas, uma linha por filme
-#df = pd.DataFrame.from_dict(filmes_dict, orient="index")
-df = filmes_dict # apagar quando for chamar a api
+df = pd.DataFrame.from_dict(filmes_dict, orient="index")
+#df = filmes_dict # apagar quando for chamar a api
 
 # Filtra apenas as colunas desejadas
 df = df[caracteristicas]
 
-# Tratando valores ausentes
-df = df.replace("N/A", "Valor não divulgado")  # Substitui valores "N/A" por "Valor não divulgado"
+
+ # Substitui valores "N/A" por "pd.NA"
+df = df.replace("N/A", pd.NA) 
 
 # Formatando a coluna Runtime para inteiro
 def converter_minutos_para_horas(minutos):
@@ -84,6 +86,7 @@ def converter_minutos_para_horas(minutos):
 
 df["Runtime"] = df["Runtime"].str.replace(" min", "").astype(pd.Int64Dtype())
 df["Runtime"] = df["Runtime"].apply(converter_minutos_para_horas)
+
 
 # Conectando ao banco de dados MySQL
 user = env["user"]
