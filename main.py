@@ -44,7 +44,6 @@ titulos_limpos = limpar_titulos(titulos_texto)
 # Conectando à API para obter informações dos filmes
 api_key = env["api_key"]
 filmes_dict = conecta_api(titulos_limpos, api_key)
-#filmes_dict = pd.read_json('filmes.json', orient='index') # apagar quando for chamar a api
 
 
 
@@ -70,7 +69,6 @@ caracteristicas = [
 
 # Cria DataFrame com todas as colunas, uma linha por filme
 df = pd.DataFrame.from_dict(filmes_dict, orient="index")
-#df = filmes_dict # apagar quando for chamar a api
 
 # Filtra apenas as colunas desejadas
 df = df[caracteristicas]
