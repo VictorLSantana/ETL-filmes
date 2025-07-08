@@ -13,8 +13,6 @@ import requests
 # Função que faz a requisição para API de filmes
 def conecta_api(titulo, api_key):
     filmes_dict = {}  # dicionário dinâmico
-    print(f"Conectando à API do OMDb")
-    
     for t in titulo:
         url = f"http://www.omdbapi.com/?t={t}&apikey={api_key}"
         response = requests.get(url)

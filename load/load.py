@@ -12,8 +12,6 @@ def conectar_bd(user, password, host, database, port):
     # Configurar a conexão com o banco de dados MySQL.
     engine = create_engine(f'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}')
     
-    print(f"Conectado ao banco de dados {database} com sucesso.")
-    
     return engine
 
 def escrever_df_no_bd(engine, df, table_name):
@@ -23,17 +21,43 @@ def escrever_df_no_bd(engine, df, table_name):
     # Enviar o DataFrame para o banco de dados MySQL.
     df.to_sql(name=table_name, con=engine, if_exists='replace', index=False) 
     
-    print(f"DataFrame escrito na tabela '{table_name}' com sucesso.")
+    
+def interface_usuario_genero(df):
+    print(f"{'='*20} INTERFACE DE RECOMENDAÇÃO DE FILMES {'='*20}\n")
+    print("- O banco de dados possui os top 250 filmes do site da IMDB.\n")
+    
+    # Escolhendo o gênero
+    print("- Digite um número para escolher um gênero:\n")
+    todos_os_generos = df['Genre'].str.split(', ').explode().unique()
+    lista_generos = []
+    
+    for i, genero in enumerate(todos_os_generos, start=1):
+        print(f"{i}. {genero}")
+        lista_generos.append(genero)
 
+    print()  # linha em branco
+    
+    while True:
+        entrada = input("Digite o número da opção desejada: ")
+        try:
+            escolha = int(entrada)
+            if 1 <= escolha <= len(lista_generos):
+                break
+            else:
+                print("Opção inválida. Escolha um número dentro da lista.")
+        except ValueError:
+            print("Entrada inválida. Digite apenas um número.")
+    
+    genero_escolhido = lista_generos[escolha - 1]
+    print(f"\nVocê escolheu o gênero: {genero_escolhido}")
+    
+    return genero_escolhido
+
+    
 
 
 if __name__ == "__main__":
-    # Exemplo de uso da função conectar_bd
-    env = dotenv_values(dotenv_path='../.env')
-    user = env["user"]
-    password = env["password"]
-    host = env["host"]
-    database = env["database"]
-    port = env["port"]
-    df = pd.DataFrame({'example_column': [1, 2, 3]})  # Exemplo de DataFrame para teste
-    conectar_bd(user, password, host, database, port, df, 'nome_da_tabela')
+    df = pd.read_json('../filmes.json', orient='index') # apagar quando for chamar a api
+    genero = interface_usuario(df, 'Genre')
+    print(genero)
+
