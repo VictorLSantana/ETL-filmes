@@ -3,7 +3,7 @@
 <p align="center">
   <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" height="80" />
   &nbsp;&nbsp;&nbsp;
-  <img src="https://www.omdbapi.com/src/omdbapi.png" height="80" />
+
 </p>
 
 > Pipeline completo de **Engenharia de Dados** usando Python e SQL para extrair, transformar e carregar dados dos 250 melhores filmes segundo o IMDb, com enriquecimento via OMDb API.
@@ -66,10 +66,12 @@ Com a interface empacotada em `.exe`, o usuário pode:
 - Biblioteca Selenium + driver do navegador (ex: ChromeDriver)
 - Conta e chave da [OMDb API](https://www.omdbapi.com/apikey.aspx)
 
-### Instalação
+### 📦 Gerar e Baixar o Executável (.exe)
+- Você pode gerar o .exe localmente com o pyinstaller ou baixar em http://bit.ly/4liU1nt
 
-1. Clone o repositório:
+![interface](https://github.com/user-attachments/assets/cdd54f3e-e801-4f63-98db-3f4ce7d19f66)
 
-```bash
-git clone https://github.com/seu-usuario/etl-filmes.git
-cd etl-filmes
+
+
+
+
